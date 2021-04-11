@@ -328,7 +328,6 @@ const distributeToken = async () => {
     let tokensToDistribute = fivePercent / len;
     console.log(`Tokens for Each Address: ${tokensToDistribute}`);
     let value = web3.utils.toWei(tokensToDistribute.toString(), 'ether')
-    console.log(`Tokens for Each Address: ${value}`);
 
     for (i in addressList) {
         await transferFunds(owner, addressList[i], value)
