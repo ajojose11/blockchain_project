@@ -2,7 +2,8 @@ var Tx = require('ethereumjs-tx').Transaction
 const Web3 = require('web3')
 const fs = require('fs');
 const rpcURL = 'https://ropsten.infura.io/v3/e93b9098ce624023b96a507964d7ded8' // Your RCP URL goes here
-const web3 = new Web3(rpcURL)
+const web3 = new Web3(rpcURL);
+const BigNumber = require('bignumber.js');
 
 const readline = require('readline');
 
@@ -11,12 +12,10 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-
-const abi = [
-    {
+// Your ABI Goes Here.ABI stands for application binary interface.  In Ethereum, it's basically how you can encode Solidity contract calls for the EVM and, backwards, how to read the data out of transactions.
+const abi = [{
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "internalType": "address",
                 "name": "owner",
@@ -40,8 +39,7 @@ const abi = [
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": true,
                 "internalType": "address",
                 "name": "from",
@@ -64,8 +62,7 @@ const abi = [
         "type": "event"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "spender",
                 "type": "address"
@@ -77,19 +74,16 @@ const abi = [
             }
         ],
         "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "recipient",
                 "type": "address"
@@ -101,19 +95,16 @@ const abi = [
             }
         ],
         "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "sender",
                 "type": "address"
@@ -130,13 +121,11 @@ const abi = [
             }
         ],
         "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+        }],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -148,19 +137,16 @@ const abi = [
     {
         "inputs": [],
         "name": "_totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "owner",
                 "type": "address"
@@ -172,109 +158,92 @@ const abi = [
             }
         ],
         "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
+        "inputs": [{
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+        }],
         "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
+        "outputs": [{
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "tokenOwner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
+        "outputs": [{
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+        }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
     }
 ]
-// Your ABI Goes Here.ABI stands for application binary interface.  In Ethereum, it's basically how you can encode Solidity contract calls for the EVM and, backwards, how to read the data out of transactions.
 
 
-const address = '0xc315a48556542ee3fb8946af176df4c17e1f4c8e'
-const owner = "0x7b7e78a9f5f6fa34e92DB8f65BbDd27eaF9191Da"
-const privateKey = Buffer.from('5dc745ce9535c0410e73dc30d9b5774c5d0f46b87cb5f06061df5d792893c2e6x', 'hex')
+const address = '0xc315a48556542ee3fb8946af176df4c17e1f4c8e' // Contract Address
+const owner = "0x7b7e78a9f5f6fa34e92DB8f65BbDd27eaF9191Da" // Contract Owner - Metamask Account Address
+const privateKey = Buffer.from('5dc745ce9535c0410e73dc30d9b5774c5d0f46b87cb5f06061df5d792893c2e6x', 'hex') // Private Key of Account
+
 const contract = new web3.eth.Contract(abi, address)
-const decimals = web3.utils.toBN(18);
 let addressList;
 let len;
 
@@ -282,9 +251,7 @@ let len;
 const getBalanceOf = async (account) => {
     let balanceOf = await contract.methods.balanceOf(account).call()
     let token = web3.utils.fromWei(balanceOf.toString(), 'ether')
-    // console.log(token)
     return token
-
 }
 
 const sendTransaction = async (raw) => {
@@ -296,11 +263,9 @@ const getTransactionCount = async (account) => {
 }
 
 const transferFunds = async (from, sendTo, amount) => {
-
+    
     let txCount = await getTransactionCount(from)
-
     console.log("txCount returned: " + txCount)
-
     const txObject = {
         nonce: web3.utils.toHex(txCount),
         gasLimit: web3.utils.toHex(100000), // uses about 36,000 gas so add some buffer
@@ -310,8 +275,10 @@ const transferFunds = async (from, sendTo, amount) => {
         to: address,
         data: contract.methods.transfer(sendTo, amount).encodeABI(),
     }
-
-    const tx = new Tx(txObject, { chain: 'ropsten', hardfork: 'petersburg' })
+    const tx = new Tx(txObject, {
+        chain: 'ropsten',
+        hardfork: 'petersburg'
+    })
     tx.sign(privateKey)
     const serializedTx = tx.serialize()
     const raw = '0x' + serializedTx.toString('hex')
@@ -321,20 +288,25 @@ const transferFunds = async (from, sendTo, amount) => {
 }
 
 const distributeToken = async () => {
-    console.log("Number of Address: ", len);
-    let balance = await getBalanceOf(owner);
+
+    console.log("Number of Accounts: ", len);
+    let ownerBalance = await getBalanceOf(owner);
+    let balance = new BigNumber(ownerBalance);
     console.log(`Balance: ${balance}`)
-    let fivePercent = (5 / 100) * balance;
-    let tokensToDistribute = fivePercent / len;
+    let fivePercent = balance.div(20);
+    console.log(`5% of owner balance is: ${fivePercent}`);
+    let tokensToDistribute = fivePercent.div(len);
     console.log(`Tokens for Each Address: ${tokensToDistribute}`);
     let value = web3.utils.toWei(tokensToDistribute.toString(), 'ether')
-
     for (i in addressList) {
         await transferFunds(owner, addressList[i], value)
     }
+
 }
+
 const main = async () => {
-    rl.question('Please enter the name of file containing address:  ', (answer) => {
+    
+    rl.question('Please enter the name of file containing accounts:  ', (answer) => {
         try {
             addressList = fs.readFileSync(answer).toString().split("\n");
             len = addressList.length
@@ -343,10 +315,7 @@ const main = async () => {
             console.log(`No file with name ${answer} found`)
         }
         rl.close();
-
     });
-
 }
 
 main();
-// go()
