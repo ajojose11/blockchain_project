@@ -4,6 +4,7 @@ const fs = require('fs');
 const rpcURL = 'https://ropsten.infura.io/v3/e93b9098ce624023b96a507964d7ded8' // Your RCP URL goes here
 const web3 = new Web3(rpcURL);
 const BigNumber = require('bignumber.js');
+BigNumber.set({ DECIMAL_PLACES: 18 })
 
 const readline = require('readline');
 
@@ -305,7 +306,7 @@ const distributeToken = async () => {
 }
 
 const main = async () => {
-    
+
     rl.question('Please enter the name of file containing accounts:  ', (answer) => {
         try {
             addressList = fs.readFileSync(answer).toString().split("\n");
